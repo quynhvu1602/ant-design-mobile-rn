@@ -9,6 +9,8 @@ import AccordionStyles, { AccordionStyle } from './style/index';
 export interface AccordionPanelProps {
   key?: string;
   header: any;
+  iconHeader: any;
+  iconTransform: any;
 }
 
 export interface AccordionNativeProps<T>
@@ -35,6 +37,8 @@ class Accordion<T extends AccordionHeader> extends React.Component<
 
   renderHeader = (styles: ReturnType<typeof AccordionStyles>) => (
     section: T,
+    iconSection: T,
+    iconSectionTransform: T,
     _: number,
     isActive: boolean,
   ) => {
@@ -47,9 +51,16 @@ class Accordion<T extends AccordionHeader> extends React.Component<
             <Text style={styles.headerText}>{section.title}</Text>
           </View>
         )}
-        <View style={styles.arrow}>
-          <Icon name={isActive ? 'up' : 'down'} style={styles.arrow} />
-        </View>
+
+        {React.isValidElement(iconSection.content) && React.isValidElement(iconSectionTransform.content) ? (
+          <View>
+            {isActive ? iconSection.content : iconSectionTransform.content}
+          </View>
+        ) : (
+          <View style={styles.arrow}>
+            <Icon name={isActive ? 'up' : 'down'} style={styles.arrow} />
+          </View>
+        )}
       </View>
     );
   };
@@ -81,6 +92,16 @@ class Accordion<T extends AccordionHeader> extends React.Component<
       },
     );
 
+    const iconHeaders: AccordionHeader[] = React.Children.map(
+      children,
+      (child: any) => {
+        return {
+          content: child.props.children,
+          style: child.props.style || {},
+        };
+      },
+    );
+
     return (
       <WithTheme themeStyles={AccordionStyles} styles={styles}>
         {s => (
@@ -91,6 +112,7 @@ class Accordion<T extends AccordionHeader> extends React.Component<
               renderContent={this.renderContent(s)}
               duration={0}
               sections={headers}
+              iconSections={iconHeaders}
               activeSections={activeSections}
               {...rest as AccordionProps<T>}
             />

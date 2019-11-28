@@ -13,6 +13,8 @@ type UltimateListViewProps = {
   scrollEnabled?: any;
   enableEmptySections?: any;
   header?: any;
+  iconHeader?: any;
+  iconTransform?:any;
   paginationFetchingView?: any;
   paginationAllLoadedView?: any;
   paginationWaitingView?: any;
